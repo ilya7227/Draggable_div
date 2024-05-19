@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style>
+  #draggable {
+    width: 100px;
+    height: 100px;
+    background-color: lightblue;
+    border: 1px solid blue;
+    position: absolute;
+  }
+</style>
+</head>
+<body>
+<div id="draggable"></div>
+
+<script>
+  const draggableDiv = document.getElementById('draggable');
+  let isDragging = false;
+  let offsetX = 0;
+  let offsetY = 0;
+
+  // Загрузка сохраненных координат
+  window.onload = function() {
+    const savedPosition = localStorage.getItem('divPosition');
+    if (savedPosition) {
+      const { left, top } = JSON.parse(savedPosition);
+      draggableDiv.style.left = left + 'px';
+      draggableDiv.style.top = top + 'px';
+    }
+  };
+
+  // Обработка событий мыши
+  draggableDiv.addEventListener('mousedown', function(e) {
+    isDragging = true;
+    offsetX = e.clientX - draggableDiv.offsetLeft;
+    offsetY = e.clientY - draggableDiv.offsetTop;
+  });
+
+  document.addEventListener('mousemove', function(e) {
+    if (!isDragging) return;
+    const newLeft = e.clientX - offsetX;
+    const newTop = e.clientY - offsetY;
+    draggableDiv.style.left = newLeft + 'px';
+    draggableDiv.style.top = newTop + 'px';
+
+    // Сохранение координат в localStorage
+    localStorage.setItem('divPosition', JSON.stringify({ left: newLeft, top: newTop }));
+  });
+
+  document.addEventListener('mouseup', function() {
+    isDragging = false;
+  });
+</script>
+</body>
+</html>
